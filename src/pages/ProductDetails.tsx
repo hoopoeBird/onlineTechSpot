@@ -140,7 +140,7 @@ const ProductDetails = () => {
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
           <div>
             <img
-              src={`http://${serverUrl}${product.default_image.url}`}
+              src={`${product.default_image.url}`}
               alt={product.title}
               className="w-full h-96 object-cover rounded-lg"
             />

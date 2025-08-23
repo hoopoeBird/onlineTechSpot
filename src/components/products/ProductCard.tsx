@@ -39,7 +39,7 @@ export const ProductCard = ({
         <Link to={`/product/${product?.id}`}>
           <div className="relative overflow-hidden rounded-t-lg">
             <img
-              src={`http://${serverUrl}${product?.default_image?.formats.medium.url}`}
+              src={`${product?.default_image?.formats.medium.url}`}
               alt={product?.title}
               className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
             />

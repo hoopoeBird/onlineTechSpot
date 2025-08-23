@@ -37,7 +37,7 @@ export const CartItem = ({ item }: CartItemProps) => {
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row gap-4">
           <img
-            src={`http://${serverUrl}${item.image}`}
+            src={`${item.image}`}
             alt={item.name}
             className="w-full md:w-24 h-24 object-cover rounded-lg"
           />
