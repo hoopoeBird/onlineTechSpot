@@ -1,0 +1,10 @@
+@font-face {
+  font-family: "DigitalNumbersFont";
+  src: url("/public/digital-7.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.my-digital-text {
+  font-family: "DigitalNumbersFont";
+}
