@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import LocalizedField from "../components/LocalizedField";
 import { Button } from "@/components/ui/button";
 import { clearInterval } from "timers";
+import Cookies from "js-cookie";
 
 const Index = () => {
   const [searchParams] = useSearchParams();
@@ -29,6 +30,7 @@ const Index = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
     })
       .then((res) => res.json())
@@ -64,6 +66,7 @@ const Index = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
     })
       .then((res) => res.json())

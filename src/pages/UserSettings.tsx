@@ -34,6 +34,7 @@ import {
   Cookie,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
 
 interface Order {
   id: string;
@@ -126,6 +127,7 @@ const UserSettings = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
       credentials: "include",
     })
@@ -156,6 +158,7 @@ const UserSettings = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
       body: JSON.stringify({
         firstName: name,
@@ -229,6 +232,7 @@ const UserSettings = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
       body: JSON.stringify({
         [key]: value,

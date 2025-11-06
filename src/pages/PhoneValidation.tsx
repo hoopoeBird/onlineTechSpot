@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover } from "@radix-ui/react-popover";
 import { Alert } from "@/components/ui/alert";
 import { MessageSquareWarning } from "lucide-react";
+import Cookies from "js-cookie";
 
 const PhoneValidation = () => {
   const [verificationCode, setVerificationCode] = useState("");
@@ -25,6 +26,7 @@ const PhoneValidation = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
       credentials: "include",
     })
@@ -52,6 +54,7 @@ const PhoneValidation = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
       credentials: "include",
       body: JSON.stringify({ phoneNumber }),
@@ -104,6 +107,7 @@ const PhoneValidation = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
       credentials: "include",
       body: JSON.stringify({ phoneNumber }),
