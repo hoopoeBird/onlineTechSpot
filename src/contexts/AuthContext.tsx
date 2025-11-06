@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
 
 interface User {
   id: string;
@@ -89,6 +90,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
           return null;
         }
+
+        Cookies.set("accessToken", data.jwt, {
+          secure: true,
+          sameSite: "strict",
+          expires: 7,
+        });
+        delete data.jwt;
         setUser(data);
       } catch (error) {
         toast.error("Failed to login");
@@ -131,6 +139,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return null;
         }
 
+        Cookies.set("accessToken", data.jwt, {
+          secure: true,
+          sameSite: "strict",
+          expires: 7,
+        });
+        delete data.jwt;
         setUser(data);
 
         try {
@@ -165,6 +179,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         "Content-Type": "application/json",
       },
       credentials: "include",
+    });
+    Cookies.remove("accessToken", {
+      secure: true,
+      sameSite: "strict",
     });
     setUser(null);
     localStorage.removeItem("userPreferences");
