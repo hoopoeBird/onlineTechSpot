@@ -18,6 +18,7 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
+import Cookies from "js-cookie";
 
 console.log(
   "VITE_STRIPE_PUBLISHABLE_KEY: ",
@@ -125,7 +126,10 @@ const Checkout = () => {
 
           await fetch(`//${serverUrl}/api/orders-plural`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${Cookies.get("accessToken")}`,
+            },
             credentials: "include",
             body: JSON.stringify({
               data: {
@@ -187,7 +191,10 @@ const Checkout = () => {
               `//${serverUrl}/api/orders-plural/create-session`,
               {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${Cookies.get("accessToken")}`,
+                },
                 credentials: "include",
                 body: JSON.stringify({
                   products: JSON.stringify(
