@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
       credentials: "include",
     })
@@ -154,6 +155,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${Cookies.get("accessToken")}`,
               },
               body: JSON.stringify({
                 phone_number: phone,
@@ -177,6 +179,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
       credentials: "include",
     });
