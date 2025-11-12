@@ -28,10 +28,10 @@ const Index = () => {
   useEffect(() => {
     fetch(`//${serverUrl}/api/products?populate=*&locale=${i18n.language}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
+      // headers: {
+      //   "Content-Type": "application/json",
+      //   Authorization: `Bearer ${Cookies.get("accessToken")}`,
+      // },
     })
       .then((res) => res.json())
       .then((data) => setProducts(data.data));
@@ -64,10 +64,10 @@ const Index = () => {
   useEffect(() => {
     fetch(`//${serverUrl}/api/products?populate=*&locale=${i18n.language}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
+      // headers: {
+      //   "Content-Type": "application/json",
+      //   Authorization: `Bearer ${Cookies.get("accessToken")}`,
+      // },
     })
       .then((res) => res.json())
       .then((data) => setProducts(data.data));
