@@ -57,7 +57,7 @@ const Checkout = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, []);
@@ -106,7 +106,7 @@ const Checkout = () => {
         const makeOrder = async () => {
           let orderItems = [];
           const createOrderItemsPromises = items.map(async (item) => {
-            let res = await fetch(`//${serverUrl}/api/order-items-plural`, {
+            let res = await fetch(`//${serverUrl}/api/v1/order-items-plural`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: "include",
@@ -124,7 +124,7 @@ const Checkout = () => {
 
           orderItems = await Promise.all(createOrderItemsPromises);
 
-          await fetch(`//${serverUrl}/api/orders-plural`, {
+          await fetch(`//${serverUrl}/api/v1/orders-plural`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -188,7 +188,7 @@ const Checkout = () => {
         const fetchClientSecret = async () => {
           try {
             const response = await fetch(
-              `//${serverUrl}/api/orders-plural/create-session`,
+              `//${serverUrl}/api/v1/orders-plural/create-session`,
               {
                 method: "POST",
                 headers: {
@@ -267,7 +267,7 @@ const Checkout = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, [i18n.language]);

@@ -42,7 +42,7 @@ export const ProductFilters = ({
 
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/product-categories?populate=*&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -54,7 +54,7 @@ export const ProductFilters = ({
 
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/product-categories?populate=*&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => {

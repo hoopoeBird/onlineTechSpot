@@ -17,7 +17,7 @@ const Products = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/products?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setProducts(data.data));
   }, []);
@@ -74,7 +74,7 @@ const Products = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/products?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setProducts(data.data));
   }, [i18n.language]);

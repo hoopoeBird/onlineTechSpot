@@ -40,13 +40,13 @@ const ProductDetails = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/products?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setProducts(data.data));
   }, [i18n.language]);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/products?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setProducts(data.data));
   }, []);

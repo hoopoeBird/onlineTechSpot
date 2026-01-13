@@ -22,7 +22,7 @@ const PhoneValidation = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/users/me`, {
+    fetch(`//${serverUrl}/api/v1/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -50,7 +50,7 @@ const PhoneValidation = () => {
   }, [navigate]);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/send-otp`, {
+    fetch(`//${serverUrl}/api/v1/send-otp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const PhoneValidation = () => {
     setIsLoading(true);
 
     try {
-      await fetch(`//${serverUrl}/api/verify-otp`, {
+      await fetch(`//${serverUrl}/api/v1/verify-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const PhoneValidation = () => {
       });
 
       setTimeout(async () => {
-        const res = await fetch(`//${serverUrl}/api/users/me`, {
+        const res = await fetch(`//${serverUrl}/api/v1/users/me`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -103,7 +103,7 @@ const PhoneValidation = () => {
   };
 
   const handleResendCode = () => {
-    fetch(`//${serverUrl}/api/send-otp`, {
+    fetch(`//${serverUrl}/api/v1/send-otp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -34,21 +34,21 @@ const About = () => {
 
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/content?populate=about_header&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/content?populate=about_header&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => setContent(data.data.about_header));
   }, []);
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/about?populate[block][on][about.our-mission][populate]=*&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/about?populate[block][on][about.our-mission][populate]=*&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => setMissions(data.data.block[0]));
   }, []);
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/about?populate[block][on][about.values-container][populate]=values&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/about?populate[block][on][about.values-container][populate]=values&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => setValues(data.data.block[0].values));
@@ -64,21 +64,21 @@ const About = () => {
 
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/content?populate=about_header&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/content?populate=about_header&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => setContent(data.data.about_header));
   }, [i18n.language]);
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/about?populate[block][on][about.our-mission][populate]=*&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/about?populate[block][on][about.our-mission][populate]=*&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => setMissions(data.data.block[0]));
   }, [i18n.language]);
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/about?populate[block][on][about.values-container][populate]=values&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/about?populate[block][on][about.values-container][populate]=values&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => setValues(data.data.block[0].values));

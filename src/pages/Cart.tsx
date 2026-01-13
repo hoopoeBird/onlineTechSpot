@@ -34,7 +34,7 @@ const Cart = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, []);
@@ -46,13 +46,13 @@ const Cart = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, [i18n.language]);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/users/me`, {
+    fetch(`//${serverUrl}/api/v1/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

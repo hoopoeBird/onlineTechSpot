@@ -40,10 +40,10 @@ export const Navbar = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
-    fetch(`//${serverUrl}/api/orders-plural`, {
+    fetch(`//${serverUrl}/api/v1/orders-plural`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export const Navbar = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, [i18n.language]);

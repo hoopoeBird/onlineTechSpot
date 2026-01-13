@@ -20,7 +20,7 @@ export const Footer = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, []);
@@ -31,7 +31,7 @@ export const Footer = () => {
 
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/product-categories?populate=*&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => setcategories(data.data));
@@ -40,14 +40,14 @@ export const Footer = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, [i18n.language]);
 
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/product-categories?populate=*&locale=${i18n.language}`
+      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`
     )
       .then((res) => res.json())
       .then((data) => setcategories(data.data));

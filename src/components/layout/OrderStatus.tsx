@@ -51,7 +51,7 @@ const OrderStatus = (props) => {
 
   async function fetchOrders() {
     const response = await fetch(
-      `//${serverUrl}/api/orders-plural`,
+      `//${serverUrl}/api/v1/orders-plural`,
 
       {
         method: "GET",

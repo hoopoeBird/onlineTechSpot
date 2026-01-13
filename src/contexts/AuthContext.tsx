@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/users/me`, {
+    fetch(`//${serverUrl}/api/v1/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     if (email && password) {
       try {
-        let res = await fetch(`//${serverUrl}/api/auth/local`, {
+        let res = await fetch(`//${serverUrl}/api/v1/auth/local`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -117,7 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   ) => {
     if (email && password && username) {
       try {
-        let res = await fetch(`//${serverUrl}/api/auth/local/register`, {
+        let res = await fetch(`//${serverUrl}/api/v1/auth/local/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -150,7 +150,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         try {
           let res = await fetch(
-            `//${serverUrl}/api/users-permissions/users/me`,
+            `//${serverUrl}/api/v1/users-permissions/users/me`,
             {
               method: "PUT",
               headers: {
@@ -175,7 +175,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    fetch(`//${serverUrl}/api/auth/logout`, {
+    fetch(`//${serverUrl}/api/v1/auth/logout`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

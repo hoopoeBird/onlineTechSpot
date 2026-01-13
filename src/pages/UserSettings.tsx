@@ -117,13 +117,13 @@ const UserSettings = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, []);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/users/me`, {
+    fetch(`//${serverUrl}/api/v1/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -154,7 +154,7 @@ const UserSettings = () => {
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateProfile({ name, email, phone, address });
-    fetch(`//${serverUrl}/api/users-permissions/users/me`, {
+    fetch(`//${serverUrl}/api/v1/users-permissions/users/me`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -192,7 +192,7 @@ const UserSettings = () => {
     }
 
     try {
-      let res = await fetch(`//${serverUrl}/api/auth/change-password`, {
+      let res = await fetch(`//${serverUrl}/api/v1/auth/change-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -228,7 +228,7 @@ const UserSettings = () => {
     const newPreferences = { ...preferences, [key]: value };
     setPreferences(newPreferences);
     localStorage.setItem("userPreferences", JSON.stringify(newPreferences));
-    fetch(`//${serverUrl}/api/users-permissions/users/me`, {
+    fetch(`//${serverUrl}/api/v1/users-permissions/users/me`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -267,7 +267,7 @@ const UserSettings = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, [i18n.language]);

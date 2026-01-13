@@ -26,7 +26,7 @@ const Index = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/products?populate=*&locale=${i18n.language}`, {
+    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
       method: "GET",
       // headers: {
       //   "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const Index = () => {
 
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/product-categories?populate[products][populate]=default_image&populate=image&locale=${i18n.language}`,
+      `//${serverUrl}/api/v1/product-categories?populate[products][populate]=default_image&populate=image&locale=${i18n.language}`,
       {
         method: "GET",
         headers: {
@@ -62,7 +62,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/products?populate=*&locale=${i18n.language}`, {
+    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
       method: "GET",
       // headers: {
       //   "Content-Type": "application/json",
@@ -75,7 +75,7 @@ const Index = () => {
 
   useEffect(() => {
     fetch(
-      `//${serverUrl}/api/product-categories?populate[products][populate]=default_image&populate=image&locale=${i18n.language}`,
+      `//${serverUrl}/api/v1/product-categories?populate[products][populate]=default_image&populate=image&locale=${i18n.language}`,
       {
         method: "GET",
         headers: {
@@ -125,7 +125,7 @@ const Index = () => {
       function getdata() {
         setTimeout(() => {
           fetch(
-            `//${serverUrl}/api/products?populate=*&locale=${i18n.language}`,
+            `//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`,
             {
               method: "GET",
               headers: {
