@@ -7,6 +7,8 @@ import React, {
 } from "react";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
+import { secureApiFetch, apiGet, apiPost, apiPut, apiDelete } from "@/lib/api-client";
+import { clearCSRFToken } from "@/lib/csrf";
 
 interface User {
   id: string;
@@ -48,13 +50,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/users/me`, {
-      method: "GET",
+    apiGet(`//${serverUrl}/api/users/me`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
-      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
@@ -68,16 +68,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     if (email && password) {
       try {
-        let res = await fetch(`//${serverUrl}/api/auth/local`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            identifier: email,
-            password,
-          }),
-          credentials: "include",
+        let res = await apiPost(`//${serverUrl}/api/auth/local`, {
+          identifier: email,
+          password,
         });
         let data = await res.json();
 
@@ -117,17 +110,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   ) => {
     if (email && password && username) {
       try {
-        let res = await fetch(`//${serverUrl}/api/auth/local/register`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            username,
-          }),
-          credentials: "include",
+        let res = await apiPost(`//${serverUrl}/api/auth/local/register`, {
+          email,
+          password,
+          username,
         });
         let data = await res.json();
 
@@ -149,19 +135,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(data);
 
         try {
-          let res = await fetch(
+          let res = await apiPut(
             `//${serverUrl}/api/users-permissions/users/me`,
             {
-              method: "PUT",
+              phone_number: phone,
+              firstName: name,
+            },
+            {
               headers: {
-                "Content-Type": "application/json",
                 Authorization: `Bearer ${Cookies.get("accessToken")}`,
               },
-              body: JSON.stringify({
-                phone_number: phone,
-                firstName: name,
-              }),
-              credentials: "include",
             }
           );
         } catch (error) {}
@@ -175,18 +158,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    fetch(`//${serverUrl}/api/auth/logout`, {
-      method: "DELETE",
+    apiDelete(`//${serverUrl}/api/auth/logout`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
-      credentials: "include",
     });
     Cookies.remove("accessToken", {
       secure: true,
       sameSite: "strict",
     });
+    clearCSRFToken();
     setUser(null);
     localStorage.removeItem("userPreferences");
     localStorage.removeItem("userOrders");

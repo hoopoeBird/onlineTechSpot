@@ -19,6 +19,7 @@ import {
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
 import Cookies from "js-cookie";
+import { apiGet, apiPost } from "@/lib/api-client";
 
 console.log(
   "VITE_STRIPE_PUBLISHABLE_KEY: ",
@@ -57,7 +58,7 @@ const Checkout = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    apiGet(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, []);
@@ -106,16 +107,11 @@ const Checkout = () => {
         const makeOrder = async () => {
           let orderItems = [];
           const createOrderItemsPromises = items.map(async (item) => {
-            let res = await fetch(`//${serverUrl}/api/order-items-plural`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-              body: JSON.stringify({
-                data: {
-                  quantity: item.quantity,
-                  product: item.documentId ?? +item.id,
-                },
-              }),
+            let res = await apiPost(`//${serverUrl}/api/order-items-plural`, {
+              data: {
+                quantity: item.quantity,
+                product: item.documentId ?? +item.id,
+              },
             });
 
             let { data } = await res.json();
@@ -124,14 +120,9 @@ const Checkout = () => {
 
           orderItems = await Promise.all(createOrderItemsPromises);
 
-          await fetch(`//${serverUrl}/api/orders-plural`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${Cookies.get("accessToken")}`,
-            },
-            credentials: "include",
-            body: JSON.stringify({
+          await apiPost(
+            `//${serverUrl}/api/orders-plural`,
+            {
               data: {
                 customer_name: formData.name,
                 customer_email: formData.email,
@@ -141,8 +132,13 @@ const Checkout = () => {
                 payment_method: formData.paymentMethod,
                 order_status: "pending",
               },
-            }),
-          });
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${Cookies.get("accessToken")}`,
+              },
+            }
+          );
           const localOrder = {
             id: Date.now().toString(),
             items: items,
@@ -187,30 +183,27 @@ const Checkout = () => {
       try {
         const fetchClientSecret = async () => {
           try {
-            const response = await fetch(
+            const response = await apiPost(
               `//${serverUrl}/api/orders-plural/create-session`,
               {
-                method: "POST",
+                products: JSON.stringify(
+                  items.reduce((item, currentItem) => {
+                    item.push({
+                      id: currentItem.documentId,
+                      quantity: currentItem.quantity,
+                    });
+                    return item;
+                  }, [])
+                ),
+                email: formData.email,
+                name: formData.name,
+                phone: "+" + searchParams.get("phone").trim(),
+                address: formData.address,
+              },
+              {
                 headers: {
-                  "Content-Type": "application/json",
                   Authorization: `Bearer ${Cookies.get("accessToken")}`,
                 },
-                credentials: "include",
-                body: JSON.stringify({
-                  products: JSON.stringify(
-                    items.reduce((item, currentItem) => {
-                      item.push({
-                        id: currentItem.documentId,
-                        quantity: currentItem.quantity,
-                      });
-                      return item;
-                    }, [])
-                  ),
-                  email: formData.email,
-                  name: formData.name,
-                  phone: "+" + searchParams.get("phone").trim(),
-                  address: formData.address,
-                }),
               }
             );
 
@@ -267,7 +260,7 @@ const Checkout = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
+    apiGet(`//${serverUrl}/api/restaurant?populate=*&locale=${i18n.language}`)
       .then((res) => res.json())
       .then((data) => setInformation(data.data));
   }, [i18n.language]);
