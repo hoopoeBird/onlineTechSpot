@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover } from "@radix-ui/react-popover";
 import { Alert } from "@/components/ui/alert";
 import { MessageSquareWarning } from "lucide-react";
-import { getAuthHeader } from "@/lib/auth";
+import Cookies from "js-cookie";
 
 const PhoneValidation = () => {
   const [verificationCode, setVerificationCode] = useState("");
@@ -26,8 +26,9 @@ const PhoneValidation = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...getAuthHeader(),
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
@@ -53,8 +54,9 @@ const PhoneValidation = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...getAuthHeader(),
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
+      credentials: "include",
       body: JSON.stringify({ phoneNumber }),
     })
       .then((res) => res.json())
@@ -70,8 +72,8 @@ const PhoneValidation = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...getAuthHeader(),
         },
+        credentials: "include",
         body: JSON.stringify({ phoneNumber, code: verificationCode }),
       });
 
@@ -80,8 +82,8 @@ const PhoneValidation = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            ...getAuthHeader(),
           },
+          credentials: "include",
         });
         const data = await res.json();
         console.log("user/me: ", data);
@@ -105,8 +107,9 @@ const PhoneValidation = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...getAuthHeader(),
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
+      credentials: "include",
       body: JSON.stringify({ phoneNumber }),
     })
       .then((res) => res.json())

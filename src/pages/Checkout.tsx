@@ -18,7 +18,7 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
-import { getAuthHeader } from "@/lib/auth";
+import Cookies from "js-cookie";
 
 console.log(
   "VITE_STRIPE_PUBLISHABLE_KEY: ",
@@ -109,6 +109,7 @@ const Checkout = () => {
             let res = await fetch(`//${serverUrl}/api/order-items-plural`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
+              credentials: "include",
               body: JSON.stringify({
                 data: {
                   quantity: item.quantity,
@@ -127,8 +128,9 @@ const Checkout = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              ...getAuthHeader(),
+              Authorization: `Bearer ${Cookies.get("accessToken")}`,
             },
+            credentials: "include",
             body: JSON.stringify({
               data: {
                 customer_name: formData.name,
@@ -191,8 +193,9 @@ const Checkout = () => {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
-                  ...getAuthHeader(),
+                  Authorization: `Bearer ${Cookies.get("accessToken")}`,
                 },
+                credentials: "include",
                 body: JSON.stringify({
                   products: JSON.stringify(
                     items.reduce((item, currentItem) => {
