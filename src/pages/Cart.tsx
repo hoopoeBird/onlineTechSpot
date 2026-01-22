@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import Cookies from "js-cookie";
+import { getAuthHeader } from "@/lib/auth";
 
 const Cart = () => {
   const { items, getTotalPrice } = useCart();
@@ -56,9 +56,8 @@ const Cart = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        ...getAuthHeader(),
       },
-      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {

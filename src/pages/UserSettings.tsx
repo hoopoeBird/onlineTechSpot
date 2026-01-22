@@ -34,7 +34,7 @@ import {
   Cookie,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Cookies from "js-cookie";
+import { getAuthHeader } from "@/lib/auth";
 
 interface Order {
   id: string;
@@ -127,9 +127,8 @@ const UserSettings = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        ...getAuthHeader(),
       },
-      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
@@ -158,7 +157,7 @@ const UserSettings = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        ...getAuthHeader(),
       },
       body: JSON.stringify({
         firstName: name,
@@ -167,7 +166,6 @@ const UserSettings = () => {
         address,
         profile,
       }),
-      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => setProfile(data));
@@ -196,13 +194,13 @@ const UserSettings = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...getAuthHeader(),
         },
         body: JSON.stringify({
           password: newPassword,
           passwordConfirmation: confirmPassword,
           currentPassword,
         }),
-        credentials: "include",
       });
       let data = await res.json();
       if (data.error) {
@@ -232,12 +230,11 @@ const UserSettings = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        ...getAuthHeader(),
       },
       body: JSON.stringify({
         [key]: value,
       }),
-      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => setProfile(data));
