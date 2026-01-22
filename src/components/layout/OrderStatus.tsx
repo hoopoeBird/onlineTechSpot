@@ -11,7 +11,7 @@ import {
 import { Package, Calendar, DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import LocalizedField from "../LocalizedField";
-import Cookies from "js-cookie";
+import { getAuthHeader } from "@/lib/auth";
 
 interface Order {
   id: string;
@@ -57,9 +57,8 @@ const OrderStatus = (props) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("accessToken")}`,
+          ...getAuthHeader(),
         },
-        credentials: "include",
       }
     );
     const orders = await response.json();
