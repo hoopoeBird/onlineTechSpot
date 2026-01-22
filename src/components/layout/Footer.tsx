@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import "./../../digital-font.css";
 import { useTranslation } from "react-i18next";
 import LocalizedField from "../LocalizedField";
+import { apiCall } from "@/lib/api";
 
 export const Footer = () => {
   const [information, setInformation]: any = useState();
@@ -20,9 +21,11 @@ export const Footer = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
   }, []);
 
   useEffect(() => {
@@ -30,27 +33,35 @@ export const Footer = () => {
   }, [information]);
 
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
-      .then((data) => setcategories(data.data));
+      .then((data) => setcategories(data.data))
+      .catch((error) => console.error("Failed to fetch categories:", error));
   }, []);
 
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
   }, [i18n.language]);
 
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
-      .then((data) => setcategories(data.data));
+      .then((data) => setcategories(data.data))
+      .catch((error) => console.error("Failed to fetch categories:", error));
   }, [i18n.language]);
 
   return (

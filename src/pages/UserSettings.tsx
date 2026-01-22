@@ -34,7 +34,7 @@ import {
   Cookie,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Cookies from "js-cookie";
+import { apiCall } from "@/lib/api";
 
 interface Order {
   id: string;
@@ -117,28 +117,25 @@ const UserSettings = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
   }, []);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/users/me`, {
+    apiCall(`//${serverUrl}/api/v1/users/me`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
-      credentials: "include",
     })
-      .then((res) => res.json())
       .then((data) => {
         setProfile(data);
         setName(data.firstName);
         setEmail(data.email);
         setPhone(data.phone_number);
         setAddress(data.address);
-      });
+      })
+      .catch((error) => console.error("Failed to fetch user:", error));
   }, []);
 
   useEffect(() => {
@@ -154,12 +151,8 @@ const UserSettings = () => {
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateProfile({ name, email, phone, address });
-    fetch(`//${serverUrl}/api/v1/users-permissions/users/me`, {
+    apiCall(`//${serverUrl}/api/v1/users-permissions/users/me`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
       body: JSON.stringify({
         firstName: name,
         email,
@@ -167,10 +160,9 @@ const UserSettings = () => {
         address,
         profile,
       }),
-      credentials: "include",
     })
-      .then((res) => res.json())
-      .then((data) => setProfile(data));
+      .then((data) => setProfile(data))
+      .catch((error) => console.error("Failed to update profile:", error));
   };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
@@ -192,19 +184,14 @@ const UserSettings = () => {
     }
 
     try {
-      let res = await fetch(`//${serverUrl}/api/v1/auth/change-password`, {
+      let data = await apiCall(`//${serverUrl}/api/v1/auth/change-password`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           password: newPassword,
           passwordConfirmation: confirmPassword,
           currentPassword,
         }),
-        credentials: "include",
       });
-      let data = await res.json();
       if (data.error) {
         if (data.error.message == "Invalid identifier or password") {
           toast.error("Invalid Email or Password");
@@ -228,19 +215,14 @@ const UserSettings = () => {
     const newPreferences = { ...preferences, [key]: value };
     setPreferences(newPreferences);
     localStorage.setItem("userPreferences", JSON.stringify(newPreferences));
-    fetch(`//${serverUrl}/api/v1/users-permissions/users/me`, {
+    apiCall(`//${serverUrl}/api/v1/users-permissions/users/me`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
       body: JSON.stringify({
         [key]: value,
       }),
-      credentials: "include",
     })
-      .then((res) => res.json())
-      .then((data) => setProfile(data));
+      .then((data) => setProfile(data))
+      .catch((error) => console.error("Failed to update preferences:", error));
 
     toast.success("Preferences updated!");
   };
@@ -267,9 +249,11 @@ const UserSettings = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
   }, [i18n.language]);
 
   return (

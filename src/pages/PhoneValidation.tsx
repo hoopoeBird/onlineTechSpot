@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover } from "@radix-ui/react-popover";
 import { Alert } from "@/components/ui/alert";
 import { MessageSquareWarning } from "lucide-react";
-import Cookies from "js-cookie";
+import { apiCall } from "@/lib/api";
 
 const PhoneValidation = () => {
   const [verificationCode, setVerificationCode] = useState("");
@@ -22,20 +22,14 @@ const PhoneValidation = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/users/me`, {
+    apiCall(`//${serverUrl}/api/v1/users/me`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
-      credentials: "include",
     })
-      .then((res) => res.json())
       .then((data) => {
         console.log(data);
-
         setPhoneNumber(data.phone_number);
-      });
+      })
+      .catch((error) => console.error("Failed to fetch user:", error));
   }, []);
 
   useEffect(() => {
@@ -50,17 +44,12 @@ const PhoneValidation = () => {
   }, [navigate]);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/send-otp`, {
+    apiCall(`//${serverUrl}/api/v1/send-otp`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
-      credentials: "include",
       body: JSON.stringify({ phoneNumber }),
     })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Failed to send OTP:", error));
   }, [phoneNumber]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,24 +57,15 @@ const PhoneValidation = () => {
     setIsLoading(true);
 
     try {
-      await fetch(`//${serverUrl}/api/v1/verify-otp`, {
+      await apiCall(`//${serverUrl}/api/v1/verify-otp`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
         body: JSON.stringify({ phoneNumber, code: verificationCode }),
       });
 
       setTimeout(async () => {
-        const res = await fetch(`//${serverUrl}/api/v1/users/me`, {
+        const data = await apiCall(`//${serverUrl}/api/v1/users/me`, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
         });
-        const data = await res.json();
         console.log("user/me: ", data);
 
         if (data.phone_number_verified) {
@@ -103,21 +83,19 @@ const PhoneValidation = () => {
   };
 
   const handleResendCode = () => {
-    fetch(`//${serverUrl}/api/v1/send-otp`, {
+    apiCall(`//${serverUrl}/api/v1/send-otp`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
-      credentials: "include",
       body: JSON.stringify({ phoneNumber }),
     })
-      .then((res) => res.json())
       .then((data) => {
         if (data.success) {
           return toast.success("Verification code sent!");
         }
         toast.error("Verification code not sent!");
+      })
+      .catch((error) => {
+        console.error("Failed to resend OTP:", error);
+        toast.error("Failed to send verification code.");
       });
   };
 

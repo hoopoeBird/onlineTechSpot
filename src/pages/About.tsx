@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { apiCall } from "@/lib/api";
 
 const About = () => {
   const [content, setContent]: any = useState();
@@ -33,25 +34,34 @@ const About = () => {
   }
 
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/content?populate=about_header&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/content?populate=about_header&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
-      .then((data) => setContent(data.data.about_header));
+      .then((data) => setContent(data.data.about_header))
+      .catch((error) => console.error("Failed to fetch content:", error));
   }, []);
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/about?populate[block][on][about.our-mission][populate]=*&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/about?populate[block][on][about.our-mission][populate]=*&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
-      .then((data) => setMissions(data.data.block[0]));
+      .then((data) => setMissions(data.data.block[0]))
+      .catch((error) => console.error("Failed to fetch missions:", error));
   }, []);
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/about?populate[block][on][about.values-container][populate]=values&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/about?populate[block][on][about.values-container][populate]=values&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
-      .then((data) => setValues(data.data.block[0].values));
+      .then((data) => setValues(data.data.block[0].values))
+      .catch((error) => console.error("Failed to fetch values:", error));
   }, []);
 
   useEffect(() => {
@@ -63,25 +73,34 @@ const About = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/content?populate=about_header&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/content?populate=about_header&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
-      .then((data) => setContent(data.data.about_header));
+      .then((data) => setContent(data.data.about_header))
+      .catch((error) => console.error("Failed to fetch content:", error));
   }, [i18n.language]);
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/about?populate[block][on][about.our-mission][populate]=*&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/about?populate[block][on][about.our-mission][populate]=*&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
-      .then((data) => setMissions(data.data.block[0]));
+      .then((data) => setMissions(data.data.block[0]))
+      .catch((error) => console.error("Failed to fetch missions:", error));
   }, [i18n.language]);
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/about?populate[block][on][about.values-container][populate]=values&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/about?populate[block][on][about.values-container][populate]=values&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
-      .then((data) => setValues(data.data.block[0].values));
+      .then((data) => setValues(data.data.block[0].values))
+      .catch((error) => console.error("Failed to fetch values:", error));
   }, [i18n.language]);
 
   return (

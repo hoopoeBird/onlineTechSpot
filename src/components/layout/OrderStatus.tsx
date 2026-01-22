@@ -11,7 +11,7 @@ import {
 import { Package, Calendar, DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import LocalizedField from "../LocalizedField";
-import Cookies from "js-cookie";
+import { apiCall } from "@/lib/api";
 
 interface Order {
   id: string;
@@ -50,19 +50,12 @@ const OrderStatus = (props) => {
   const [processingOrders, setProcessingOrders] = useState<Order[]>([]);
 
   async function fetchOrders() {
-    const response = await fetch(
+    const orders = await apiCall(
       `//${serverUrl}/api/v1/orders-plural`,
-
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("accessToken")}`,
-        },
-        credentials: "include",
       }
     );
-    const orders = await response.json();
     console.log("orders: ", orders);
     return orders;
   }
