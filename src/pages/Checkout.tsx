@@ -18,7 +18,7 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
-import Cookies from "js-cookie";
+import { apiCall } from "@/lib/api";
 
 console.log(
   "VITE_STRIPE_PUBLISHABLE_KEY: ",
@@ -57,9 +57,11 @@ const Checkout = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
   }, []);
 
   useEffect(() => {
@@ -106,10 +108,8 @@ const Checkout = () => {
         const makeOrder = async () => {
           let orderItems = [];
           const createOrderItemsPromises = items.map(async (item) => {
-            let res = await fetch(`//${serverUrl}/api/v1/order-items-plural`, {
+            const data = await apiCall(`//${serverUrl}/api/v1/order-items-plural`, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
               body: JSON.stringify({
                 data: {
                   quantity: item.quantity,
@@ -118,19 +118,13 @@ const Checkout = () => {
               }),
             });
 
-            let { data } = await res.json();
-            return data.documentId;
+            return data.data.documentId;
           });
 
           orderItems = await Promise.all(createOrderItemsPromises);
 
-          await fetch(`//${serverUrl}/api/v1/orders-plural`, {
+          await apiCall(`//${serverUrl}/api/v1/orders-plural`, {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${Cookies.get("accessToken")}`,
-            },
-            credentials: "include",
             body: JSON.stringify({
               data: {
                 customer_name: formData.name,
@@ -187,15 +181,10 @@ const Checkout = () => {
       try {
         const fetchClientSecret = async () => {
           try {
-            const response = await fetch(
+            const data = await apiCall(
               `//${serverUrl}/api/v1/orders-plural/create-session`,
               {
                 method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${Cookies.get("accessToken")}`,
-                },
-                credentials: "include",
                 body: JSON.stringify({
                   products: JSON.stringify(
                     items.reduce((item, currentItem) => {
@@ -213,12 +202,6 @@ const Checkout = () => {
                 }),
               }
             );
-
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
 
             console.log(
               "data.stripeSession: ",
@@ -267,9 +250,11 @@ const Checkout = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
   }, [i18n.language]);
 
   if (isLoading) {
