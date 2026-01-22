@@ -41,17 +41,23 @@ const ProductDetails = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    apiCall(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
-      includeAuth: false,
-    })
+    apiCall(
+      `//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      },
+    )
       .then((data) => setProducts(data.data))
       .catch((error) => console.error("Failed to fetch products:", error));
   }, [i18n.language]);
 
   useEffect(() => {
-    apiCall(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
-      includeAuth: false,
-    })
+    apiCall(
+      `//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      },
+    )
       .then((data) => setProducts(data.data))
       .catch((error) => console.error("Failed to fetch products:", error));
   }, []);
@@ -65,11 +71,10 @@ const ProductDetails = () => {
     console.log("id: ", id);
 
     const foundProduct = products?.find(
-      (product) => product?.id?.toString() === id
+      (product) => product?.id?.toString() === id,
     );
     if (foundProduct) {
       setProduct(foundProduct);
-      // Mock reviews data
       setReviews([
         {
           id: "1",

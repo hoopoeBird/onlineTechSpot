@@ -6,7 +6,12 @@ import React, {
   useEffect,
 } from "react";
 import { toast } from "sonner";
-import { apiCall, setAuthToken, removeAuthToken, getAuthToken } from "@/lib/api";
+import {
+  apiCall,
+  setAuthToken,
+  removeAuthToken,
+  getAuthToken,
+} from "@/lib/api";
 
 interface User {
   id: string;
@@ -24,7 +29,7 @@ interface AuthContextType {
     password: string,
     username: string,
     phone: string,
-    name: string
+    name: string,
   ) => Promise<void>;
   logout: () => void;
   updateProfile: (userData: Partial<User>) => void;
@@ -87,7 +92,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return null;
         }
 
-        // Store JWT in localStorage
         setAuthToken(data.jwt);
         delete data.jwt;
         setUser(data);
@@ -106,19 +110,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string,
     username: string,
     phone: string,
-    name: string
+    name: string,
   ) => {
     if (email && password && username) {
       try {
-        const data = await apiCall(`//${serverUrl}/api/v1/auth/local/register`, {
-          method: "POST",
-          body: JSON.stringify({
-            email,
-            password,
-            username,
-          }),
-          includeAuth: false,
-        });
+        const data = await apiCall(
+          `//${serverUrl}/api/v1/auth/local/register`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              email,
+              password,
+              username,
+            }),
+            includeAuth: false,
+          },
+        );
 
         if (data.error) {
           if (data.error.message == "Email or Username are already taken") {
@@ -129,7 +136,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return null;
         }
 
-        // Store JWT in localStorage
         setAuthToken(data.jwt);
         delete data.jwt;
         setUser(data);
