@@ -49,7 +49,7 @@ const Index = () => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     )
       .then((res) => res.json())
       .then((data) => setCategories(data.data));
@@ -81,7 +81,7 @@ const Index = () => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     )
       .then((res) => res.json())
       .then((data) => setCategories(data.data));
@@ -131,7 +131,7 @@ const Index = () => {
               headers: {
                 "Content-Type": "application/json",
               },
-            }
+            },
           ).then((res) => {
             if (!res.ok) {
               isNormal = false;
@@ -217,7 +217,7 @@ const Index = () => {
                               navigate(
                                 `/products/?category=${category.title
                                   .split(" ")[0]
-                                  .toLowerCase()}`
+                                  .toLowerCase()}`,
                               );
                             }}
                           >
