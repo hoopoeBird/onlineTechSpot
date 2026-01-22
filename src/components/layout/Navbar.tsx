@@ -29,7 +29,7 @@ import "./../../digital-font.css";
 import "../../i18n";
 import { useTranslation } from "react-i18next";
 import * as Popover from "@radix-ui/react-popover";
-import { getAuthHeader } from "@/lib/auth";
+import Cookies from "js-cookie";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,8 +47,9 @@ export const Navbar = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...getAuthHeader(),
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
       },
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
