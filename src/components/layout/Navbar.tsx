@@ -29,7 +29,7 @@ import "./../../digital-font.css";
 import "../../i18n";
 import { useTranslation } from "react-i18next";
 import * as Popover from "@radix-ui/react-popover";
-import Cookies from "js-cookie";
+import { apiCall } from "@/lib/api";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,18 +40,15 @@ export const Navbar = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
-    fetch(`//${serverUrl}/api/v1/orders-plural`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
-      credentials: "include",
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
     })
-      .then((res) => res.json())
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
+    
+    apiCall(`//${serverUrl}/api/v1/orders-plural`, {
+      method: "GET",
+    })
       .then((data) => {
         const existingOrders = JSON.parse(
           localStorage.getItem("userOrders") || "[]"
@@ -59,7 +56,8 @@ export const Navbar = () => {
         existingOrders.push(data);
         localStorage.setItem("userOrders", JSON.stringify(data));
         console.log("my beautiful data: ", data);
-      });
+      })
+      .catch((error) => console.error("Failed to fetch orders:", error));
   }, []);
 
   const navigate = useNavigate();
@@ -79,9 +77,11 @@ export const Navbar = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
   }, [i18n.language]);
 
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);

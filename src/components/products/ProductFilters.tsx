@@ -14,6 +14,7 @@ import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import LocalizedField from "../LocalizedField";
+import { apiCall } from "@/lib/api";
 
 interface ProductFiltersProps {
   selectedCategory: string;
@@ -41,26 +42,32 @@ export const ProductFilters = ({
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
       .then((data) => {
         setcategories(data.data);
-      });
+      })
+      .catch((error) => console.error("Failed to fetch categories:", error));
   }, []);
 
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(
-      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`
+    apiCall(
+      `//${serverUrl}/api/v1/product-categories?populate=*&locale=${i18n.language}`,
+      {
+        includeAuth: false,
+      }
     )
-      .then((res) => res.json())
       .then((data) => {
         console.log(data.data);
         setcategories(data.data);
-      });
+      })
+      .catch((error) => console.error("Failed to fetch categories:", error));
   }, [i18n.language]);
 
   return (

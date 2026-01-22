@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import Cookies from "js-cookie";
+import { apiCall } from "@/lib/api";
 
 const Cart = () => {
   const { items, getTotalPrice } = useCart();
@@ -34,9 +34,11 @@ const Cart = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
   }, []);
 
   useEffect(() => {
@@ -46,21 +48,17 @@ const Cart = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setInformation(data.data));
+    apiCall(`//${serverUrl}/api/v1/restaurant?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setInformation(data.data))
+      .catch((error) => console.error("Failed to fetch restaurant:", error));
   }, [i18n.language]);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/users/me`, {
+    apiCall(`//${serverUrl}/api/v1/users/me`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
-      credentials: "include",
     })
-      .then((res) => res.json())
       .then((data) => {
         setFormData({
           name: data?.firstName,

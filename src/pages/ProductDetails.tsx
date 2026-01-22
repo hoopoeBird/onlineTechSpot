@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import LocalizedField from "@/components/LocalizedField";
+import { apiCall } from "@/lib/api";
 
 interface Review {
   id: string;
@@ -40,15 +41,19 @@ const ProductDetails = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setProducts(data.data));
+    apiCall(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setProducts(data.data))
+      .catch((error) => console.error("Failed to fetch products:", error));
   }, [i18n.language]);
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setProducts(data.data));
+    apiCall(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setProducts(data.data))
+      .catch((error) => console.error("Failed to fetch products:", error));
   }, []);
 
   useEffect(() => {

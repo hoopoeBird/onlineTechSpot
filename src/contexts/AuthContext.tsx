@@ -6,7 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import { toast } from "sonner";
-import Cookies from "js-cookie";
+import { apiCall, setAuthToken, removeAuthToken, getAuthToken } from "@/lib/api";
 
 interface User {
   id: string;
@@ -48,38 +48,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/users/me`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("useauth: ", data);
-        if (data.id) {
-          setUser(data);
-        }
-      });
+    const token = getAuthToken();
+    if (token) {
+      apiCall(`//${serverUrl}/api/v1/users/me`)
+        .then((data) => {
+          console.log("useauth: ", data);
+          if (data.id) {
+            setUser(data);
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to fetch user:", error);
+          removeAuthToken();
+        });
+    }
   }, []);
 
   const login = async (email: string, password: string) => {
     if (email && password) {
       try {
-        let res = await fetch(`//${serverUrl}/api/v1/auth/local`, {
+        const data = await apiCall(`//${serverUrl}/api/v1/auth/local`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: JSON.stringify({
             identifier: email,
             password,
           }),
-          credentials: "include",
+          includeAuth: false,
         });
-        let data = await res.json();
 
         console.log("data: ", data);
 
@@ -92,15 +87,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return null;
         }
 
-        Cookies.set("accessToken", data.jwt, {
-          secure: true,
-          sameSite: "strict",
-          expires: 7,
-        });
+        // Store JWT in localStorage
+        setAuthToken(data.jwt);
         delete data.jwt;
         setUser(data);
       } catch (error) {
         toast.error("Failed to login");
+        throw error;
       }
       toast.success("Logged in successfully");
     } else {
@@ -117,19 +110,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   ) => {
     if (email && password && username) {
       try {
-        let res = await fetch(`//${serverUrl}/api/v1/auth/local/register`, {
+        const data = await apiCall(`//${serverUrl}/api/v1/auth/local/register`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: JSON.stringify({
             email,
             password,
             username,
           }),
-          credentials: "include",
+          includeAuth: false,
         });
-        let data = await res.json();
 
         if (data.error) {
           if (data.error.message == "Email or Username are already taken") {
@@ -140,33 +129,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return null;
         }
 
-        Cookies.set("accessToken", data.jwt, {
-          secure: true,
-          sameSite: "strict",
-          expires: 7,
-        });
+        // Store JWT in localStorage
+        setAuthToken(data.jwt);
         delete data.jwt;
         setUser(data);
 
         try {
-          let res = await fetch(
-            `//${serverUrl}/api/v1/users-permissions/users/me`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${Cookies.get("accessToken")}`,
-              },
-              body: JSON.stringify({
-                phone_number: phone,
-                firstName: name,
-              }),
-              credentials: "include",
-            }
-          );
-        } catch (error) {}
+          await apiCall(`//${serverUrl}/api/v1/users-permissions/users/me`, {
+            method: "PUT",
+            body: JSON.stringify({
+              phone_number: phone,
+              firstName: name,
+            }),
+          });
+        } catch (error) {
+          console.error("Failed to update user profile:", error);
+        }
       } catch (error) {
         toast.error("Failed to register");
+        throw error;
       }
       toast.success("Account Added successfully");
     } else {
@@ -175,18 +156,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    fetch(`//${serverUrl}/api/v1/auth/logout`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      },
-      credentials: "include",
-    });
-    Cookies.remove("accessToken", {
-      secure: true,
-      sameSite: "strict",
-    });
+    const token = getAuthToken();
+    if (token) {
+      apiCall(`//${serverUrl}/api/v1/auth/logout`, {
+        method: "DELETE",
+      }).catch((error) => {
+        console.error("Logout API call failed:", error);
+      });
+    }
+
+    removeAuthToken();
     setUser(null);
     localStorage.removeItem("userPreferences");
     localStorage.removeItem("userOrders");

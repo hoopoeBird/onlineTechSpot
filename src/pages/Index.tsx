@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import LocalizedField from "../components/LocalizedField";
 import { Button } from "@/components/ui/button";
 import { clearInterval } from "timers";
-import Cookies from "js-cookie";
+import { apiCall } from "@/lib/api";
 
 const Index = () => {
   const [searchParams] = useSearchParams();
@@ -26,15 +26,15 @@ const Index = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
-      method: "GET",
-      // headers: {
-      //   "Content-Type": "application/json",
-      //   Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      // },
-    })
-      .then((res) => res.json())
-      .then((data) => setProducts(data.data));
+    apiCall(
+      `//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`,
+      {
+        method: "GET",
+        includeAuth: false,
+      },
+    )
+      .then((data) => setProducts(data.data))
+      .catch((error) => console.error("Failed to fetch products:", error));
   }, []);
 
   useEffect(() => {
@@ -42,17 +42,15 @@ const Index = () => {
   }, [products]);
 
   useEffect(() => {
-    fetch(
+    apiCall(
       `//${serverUrl}/api/v1/product-categories?populate[products][populate]=default_image&populate=image&locale=${i18n.language}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        includeAuth: false,
       },
     )
-      .then((res) => res.json())
-      .then((data) => setCategories(data.data));
+      .then((data) => setCategories(data.data))
+      .catch((error) => console.error("Failed to fetch categories:", error));
   }, []);
 
   useEffect(() => {
@@ -62,29 +60,27 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
-      method: "GET",
-      // headers: {
-      //   "Content-Type": "application/json",
-      //   Authorization: `Bearer ${Cookies.get("accessToken")}`,
-      // },
-    })
-      .then((res) => res.json())
-      .then((data) => setProducts(data.data));
+    apiCall(
+      `//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`,
+      {
+        method: "GET",
+        includeAuth: false,
+      },
+    )
+      .then((data) => setProducts(data.data))
+      .catch((error) => console.error("Failed to fetch products:", error));
   }, [i18n.language]);
 
   useEffect(() => {
-    fetch(
+    apiCall(
       `//${serverUrl}/api/v1/product-categories?populate[products][populate]=default_image&populate=image&locale=${i18n.language}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        includeAuth: false,
       },
     )
-      .then((res) => res.json())
-      .then((data) => setCategories(data.data));
+      .then((data) => setCategories(data.data))
+      .catch((error) => console.error("Failed to fetch categories:", error));
   }, [i18n.language]);
 
   const filteredProducts = useMemo(() => {
@@ -124,22 +120,20 @@ const Index = () => {
       let isNormal = true;
       function getdata() {
         setTimeout(() => {
-          fetch(
+          apiCall(
             `//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`,
             {
               method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
+              includeAuth: false,
             },
-          ).then((res) => {
-            if (!res.ok) {
+          )
+            .then((data) => {
+              if (!isNormal) window.location.reload();
+            })
+            .catch((error) => {
               isNormal = false;
               getdata();
-              return null;
-            }
-            if (!isNormal) window.location.reload();
-          });
+            });
         }, 2000);
       }
       getdata();

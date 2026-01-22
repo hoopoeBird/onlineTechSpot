@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { Product } from "@/types/product";
 import { useTranslation } from "react-i18next";
+import { apiCall } from "@/lib/api";
 
 const Products = () => {
   const [searchParams] = useSearchParams();
@@ -17,9 +18,11 @@ const Products = () => {
   const serverUrl = import.meta.env.VITE_SERVER;
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setProducts(data.data));
+    apiCall(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setProducts(data.data))
+      .catch((error) => console.error("Failed to fetch products:", error));
   }, []);
 
   useEffect(() => {
@@ -74,9 +77,11 @@ const Products = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    fetch(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`)
-      .then((res) => res.json())
-      .then((data) => setProducts(data.data));
+    apiCall(`//${serverUrl}/api/v1/products?populate=*&locale=${i18n.language}`, {
+      includeAuth: false,
+    })
+      .then((data) => setProducts(data.data))
+      .catch((error) => console.error("Failed to fetch products:", error));
   }, [i18n.language]);
 
   return (
